@@ -2,18 +2,17 @@ package application;
 
 import boardgame.Board;
 import boardgame.Position;
+import chess.ChessMatch;
+import chess.ChessPiece;
 
 public class Program {
 
-    public static void main(String [] args){
+    public static void main(String [] args) {
 
         Board board = new Board(8, 8);
 
-        for (int i =0; i < board.getRows(); i++){
-            for (int j =0; j < board.getColumns(); j++){
-                System.out.print("X");
-            }
-            System.out.println(" ");
-        }
+        ChessMatch chessMatch = new ChessMatch();
+        UI.printBoard(chessMatch.getPieces());
+
     }
 }
