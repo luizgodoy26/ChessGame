@@ -7,6 +7,7 @@ public class Piece  {
 
     public Piece(Board board) {
         this.board = board;
+        // ESTE POSITION DEIXA DE SER NULL NO MÉTODO BOARD, ONDE UMA POSIÇÃO SERÁ ATRIBUÍDA À PEÇA
         position = null;
     }
 
