@@ -8,24 +8,29 @@ public class ChessMatch {
 
     private Board board;
 
-    // cria um tabuleiro com 8 colunas e 8 linhas e posiciona as peças
+    // Cria um tabuleiro com 8 colunas e 8 linhas e posiciona as peças
     public ChessMatch(){
         board = new Board(8,8);
         initialSetup();
     }
 
 
-    // inicia a partida posicionando as peças no tabuleiro
+    // Inicia a partida posicionando as peças no tabuleiro
     private void initialSetup(){
-        // WITE BOARD
-        board.placePiece(new Rook(board, Color.WHITE), new Position(0,0));
-        board.placePiece(new Rook(board, Color.WHITE), new Position(0,7));
-        board.placePiece(new King(board, Color.WHITE), new Position(0,4));
+        // WHITE BOARD
+        placeNewPiece('a', 1, new Rook(board, Color.WHITE));
+        placeNewPiece('h', 1, new Rook(board, Color.WHITE));
+        placeNewPiece('e', 1, new King(board, Color.WHITE));
 
         // BLACK BOARD
-        board.placePiece(new Rook(board, Color.WHITE), new Position(7,0));
-        board.placePiece(new Rook(board, Color.WHITE), new Position(7,7));
-        board.placePiece(new King(board, Color.WHITE), new Position(7,4));
+        placeNewPiece('a', 8, new Rook(board, Color.BLACK));
+        placeNewPiece('h', 8, new Rook(board, Color.BLACK));
+        placeNewPiece('e', 8, new King(board, Color.BLACK));
+    }
+
+    // Converte as posições do tipo Board(Matriz) para o Tipo Chess (Onde é possível referenciar a posição através das letras)
+    private void placeNewPiece(char column, int row, ChessPiece piece){
+        board.placePiece(piece, new ChessPosition(column, row).toPosition());
     }
 
 

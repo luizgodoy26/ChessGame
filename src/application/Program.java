@@ -8,7 +8,7 @@ public class Program {
 
         ChessMatch chessMatch = new ChessMatch();
 
-        // a classe ui irá exibir os dados na tela
+        // A classe ui irá exibir os dados na tela
         UI.printBoard(chessMatch.getPieces());
 
     }
