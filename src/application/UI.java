@@ -32,6 +32,14 @@ public class UI {
     public static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
 
 
+    // Limpa a tela do console
+    // https://www.quora.com/How-do-I-clear-console-screen-CMD-screen-in-Java-Is-there-any-function-in-Java-like-clrscr-and-system-cls-in-C
+    public static void clearScreen() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
+
+
     // Le a posição inputada pelo usuário
     public static ChessPosition readChessPosition(Scanner input){
         try {
