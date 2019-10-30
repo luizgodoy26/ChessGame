@@ -61,6 +61,21 @@ public class Board {
     }
 
 
+    // A peça será removida tanto do Piece quanto da matriz do tabuleiro
+    public Piece removePiece(Position position){
+        if (!positionExists(position)){
+            throw new BoardException("THIS POSITION DOES NOT EXIST");
+        }
+        if (piece(position) == null){
+            return null;
+        }
+        Piece aux = piece(position);
+        aux.position = null;                                    // A peça nesta posição passará a ter valor nulo
+        pieces[position.getRow()][position.getColumn()] = null; // A matriz nesta posição passará a ter valor nulo também
+        return aux;
+    }
+
+
     // Constructor
     public Board(int rows, int columns) {
         if (rows < 1 || columns < 1){
