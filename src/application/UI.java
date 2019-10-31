@@ -4,7 +4,6 @@ import chess.ChessPiece;
 import chess.ChessPosition;
 import chess.Color;
 
-import java.awt.*;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -56,21 +55,36 @@ public class UI {
 
 
     // Verifica se há alguma peça no local e exibe ela
-    public static void printBoard(ChessPiece[][] pieces){
-        for (int i  = 0; i < pieces.length; i++){
-            System.out.print((pieces.length - i) + " ");
-            for (int j  = 0; j < pieces.length; j++){
-                printPiece(pieces[i][j]);
+    public static void printBoard(ChessPiece[][] pieces) {
+        for (int i = 0; i < pieces.length; i++) {
+            System.out.print((8 - i) + " ");
+            for (int j = 0; j < pieces.length; j++) {
+                printPiece(pieces[i][j], false);
             }
-            System.out.println(" ");
+            System.out.println();
+        }
+        System.out.println("  a b c d e f g h");
+    }
+
+    // Pinta o fundo nos para possíveis movimentos
+    public static void printBoard(ChessPiece[][] pieces, boolean[][] possibleMoves) {
+        for (int i = 0; i < pieces.length; i++) {
+            System.out.print((8 - i) + " ");
+            for (int j = 0; j < pieces.length; j++) {
+                printPiece(pieces[i][j], possibleMoves[i][j]);
+            }
+            System.out.println();
         }
         System.out.println("  a b c d e f g h");
     }
 
     // Verifica se há uma peça no espaço e exibe o '-' quando não há
-    private static void printPiece(ChessPiece piece) {
+    private static void printPiece(ChessPiece piece, boolean background) {
+        if (background){
+            System.out.print(ANSI_GREEN_BACKGROUND);
+        }
         if (piece == null) {
-            System.out.print("-");
+            System.out.print("-" + ANSI_RESET);
         }
         else {
             // Verifica a cor da peça e exibe ela na cor correta
