@@ -2,6 +2,9 @@ package boardgame;
 
 import chess.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 // esta classe será classe onde todas as regras do jogo serão criadas
 public class ChessMatch {
@@ -11,6 +14,8 @@ public class ChessMatch {
     private int turn;
     private Color currentPlayer;
 
+    private List<ChessPiece> piecesOnBoard = new ArrayList<>();
+    private List<ChessPiece> capturedPieces = new ArrayList<>();
 
     // Cria o tabuleiro / Inicia o jogo com as peças brancas / Define turno / Posiciona as peças
     public ChessMatch(){
@@ -49,6 +54,13 @@ public class ChessMatch {
     public Piece makeMove(Position source, Position target){
         Piece p = board.removePiece(source);                // Retira a peça da posição atual
         Piece capturedPice = board.removePiece(target);     // Captura a peça da posição alvo
+
+        // Se houver captura de uma peça
+        if (capturedPice != null){
+            piecesOnBoard.remove(capturedPice);             // Retira a peça da lista de paças no tabuleiro
+            capturedPieces.add((ChessPiece) capturedPice);  // Adiciona à lista de peças capturadas
+        }
+
         board.placePiece(p, target);                        // Move a peça para a posição destino
         return capturedPice;
     }
@@ -104,6 +116,7 @@ public class ChessMatch {
     // Converte as posições do tipo Board(Matriz) para o Tipo Chess (Onde é possível referenciar a posição através das letras)
     private void placeNewPiece(char column, int row, ChessPiece piece){
         board.placePiece(piece, new ChessPosition(column, row).toPosition());
+        piecesOnBoard.add(piece);
     }
 
 

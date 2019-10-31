@@ -5,8 +5,8 @@ import chess.ChessPiece;
 import chess.ChessPosition;
 import chess.Color;
 
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class UI {
 
@@ -56,11 +56,14 @@ public class UI {
 
 
     // Exibe todos os dados da partida
-    public static void printMatch(ChessMatch chessMatch){
+    public static void printMatch(ChessMatch chessMatch, List<ChessPiece> captured){
         printBoard(chessMatch.getPieces());
+        System.out.println();
+        printCapturedPieces(captured);          // Exibirá as peças capturadas
         System.out.println();
         System.out.printf("TURN [%d]\n", chessMatch.getTurn());
         System.out.println("PLAYER [" + chessMatch.getCurrentPlayer() + "]");
+
     }
 
     // Verifica se há alguma peça no local e exibe ela
@@ -109,4 +112,22 @@ public class UI {
         System.out.print(" ");
     }
 
+
+    // Exibirá uma lista de peças capturadas
+    private static void printCapturedPieces(List<ChessPiece> captured){
+        List<ChessPiece> whiteCaptured = captured.stream().filter(x -> x.getColor() == Color.WHITE).collect(Collectors.toList());
+        List<ChessPiece> blackCaptured = captured.stream().filter(x -> x.getColor() == Color.BLACK).collect(Collectors.toList());
+
+        System.out.println("***CAPTURED PIECES***");
+
+        System.out.print("WHITE: ");
+        System.out.print(ANSI_WHITE);
+        System.out.println(Arrays.toString(whiteCaptured.toArray()));   // Este comando passa um arraylist para String
+        System.out.print(ANSI_RESET);
+
+        System.out.print("BLACK: ");
+        System.out.print(ANSI_YELLOW);
+        System.out.println(Arrays.toString(blackCaptured.toArray()));   // Este comando passa um arraylist para String
+        System.out.print(ANSI_RESET);
+    }
 }
