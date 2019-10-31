@@ -19,7 +19,7 @@ public class Program {
             try {
                 // A classe ui irá exibir os dados na tela
                 UI.clearScreen();
-                UI.printBoard(chessMatch.getPieces());
+                UI.printMatch(chessMatch);
                 System.out.println();
                 System.out.print("SOURCE (cR): ");
                     ChessPosition source = UI.readChessPosition(input);

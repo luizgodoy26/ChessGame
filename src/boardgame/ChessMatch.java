@@ -6,12 +6,30 @@ import chess.*;
 // esta classe será classe onde todas as regras do jogo serão criadas
 public class ChessMatch {
 
-    private Board board;
 
-    // Cria um tabuleiro com 8 colunas e 8 linhas e posiciona as peças
+    private Board board;
+    private int turn;
+    private Color currentPlayer;
+
+
+    // Cria o tabuleiro / Inicia o jogo com as peças brancas / Define turno / Posiciona as peças
     public ChessMatch(){
         board = new Board(8,8);
+        turn = 1;
+        currentPlayer = Color.WHITE;
         initialSetup();
+    }
+
+
+    // Passa para o próximo turno / Muda para o próximo jogador
+    public void nextTurn(){
+        turn++;
+        if(currentPlayer == Color.WHITE){
+            currentPlayer = Color.BLACK;
+        }
+        else {
+            currentPlayer = Color.WHITE;
+        }
     }
 
 
@@ -20,8 +38,9 @@ public class ChessMatch {
         Position source = sourcePosition.toPosition();
         Position target = targetPosition.toPosition();
         validateSourcePosition(source);             // Valida a origem da peça
-        validateTargetPosition(source, target);     // VAlida o destino da peça
+        validateTargetPosition(source, target);     // Valida o destino da peça
         Piece capturedPiece = makeMove(source, target);
+        nextTurn();                                 // Passa para o próximo turno
         return (ChessPiece)(capturedPiece);
     }
 
@@ -39,6 +58,10 @@ public class ChessMatch {
     public void validateSourcePosition(Position position){
         if (!board.thereIsAPiece(position)){
             throw new ChessException("THERE IS NO PIECE IN THIS PLACE!");
+        }
+        // Verifica se a peça que será movida pertence ao responsável pelo turno
+        if (currentPlayer != ((ChessPiece)board.piece(position)).getColor()){
+            throw new ChessException("THIS PIECE BELONGS TO THE OTHER PLAYER!");
         }
         // Verifica se não há algum movimento possível
         if (!board.piece(position).isThereAnyPossibleMove()){
@@ -63,6 +86,7 @@ public class ChessMatch {
         return board.piece(position).possibleMoves();
     }
 
+
     // Inicia a partida posicionando as peças no tabuleiro
     private void initialSetup(){
         // WHITE BOARD
@@ -82,6 +106,7 @@ public class ChessMatch {
         board.placePiece(piece, new ChessPosition(column, row).toPosition());
     }
 
+
     /* para que o console não tenha acesso à peça do tipo piece
      * cria-se uma nova matriz do tipo chesspiece, recebendo os valores de piece
      * desta forma, o tabuleiro */
@@ -95,5 +120,15 @@ public class ChessMatch {
             }
         }
         return mat;
+    }
+
+
+    public int getTurn() {
+        return turn;
+    }
+
+
+    public Color getCurrentPlayer() {
+        return currentPlayer;
     }
 }

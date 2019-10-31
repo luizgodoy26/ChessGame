@@ -1,5 +1,6 @@
 package application;
 
+import boardgame.ChessMatch;
 import chess.ChessPiece;
 import chess.ChessPosition;
 import chess.Color;
@@ -54,6 +55,14 @@ public class UI {
     }
 
 
+    // Exibe todos os dados da partida
+    public static void printMatch(ChessMatch chessMatch){
+        printBoard(chessMatch.getPieces());
+        System.out.println();
+        System.out.printf("TURN [%d]\n", chessMatch.getTurn());
+        System.out.println("PLAYER [" + chessMatch.getCurrentPlayer() + "]");
+    }
+
     // Verifica se há alguma peça no local e exibe ela
     public static void printBoard(ChessPiece[][] pieces) {
         for (int i = 0; i < pieces.length; i++) {
@@ -65,6 +74,7 @@ public class UI {
         }
         System.out.println("  a b c d e f g h");
     }
+
 
     // Pinta o fundo nos para possíveis movimentos
     public static void printBoard(ChessPiece[][] pieces, boolean[][] possibleMoves) {
@@ -78,10 +88,11 @@ public class UI {
         System.out.println("  a b c d e f g h");
     }
 
+
     // Verifica se há uma peça no espaço e exibe o '-' quando não há
     private static void printPiece(ChessPiece piece, boolean background) {
         if (background){
-            System.out.print(ANSI_GREEN_BACKGROUND);
+            System.out.print(ANSI_RED_BACKGROUND);
         }
         if (piece == null) {
             System.out.print("-" + ANSI_RESET);
@@ -97,4 +108,5 @@ public class UI {
         }
         System.out.print(" ");
     }
+
 }
