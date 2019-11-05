@@ -22,9 +22,11 @@ public abstract class ChessPiece extends Piece {
         return p != null && p.getColor() != color;
     }
 
-    protected void increaseMoveCount(){}
 
-    protected void decreaseMoveCount(){}
+    // Passa o valor de Position para ChessPosition, para que a aplicação tenha acesso
+    public ChessPosition getChessPosition(){
+        return ChessPosition.fromPosition(position);
+    }
 
     public Color getColor() {
         return color;

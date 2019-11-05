@@ -4,6 +4,7 @@ import chess.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 // esta classe será classe onde todas as regras do jogo serão criadas
@@ -13,6 +14,7 @@ public class ChessMatch {
     private Board board;
     private int turn;
     private Color currentPlayer;
+    private boolean check;
 
     private List<ChessPiece> piecesOnBoard = new ArrayList<>();
     private List<ChessPiece> capturedPieces = new ArrayList<>();
@@ -51,7 +53,7 @@ public class ChessMatch {
 
 
     // Valida os movimentos
-    public Piece makeMove(Position source, Position target){
+    public Piece makeMove(Position source, Position target) {
         Piece p = board.removePiece(source);                // Retira a peça da posição atual
         Piece capturedPice = board.removePiece(target);     // Captura a peça da posição alvo
 
@@ -63,6 +65,19 @@ public class ChessMatch {
 
         board.placePiece(p, target);                        // Move a peça para a posição destino
         return capturedPice;
+    }
+
+
+    // Desfaz o movimento quando o usuário se põe em cheque
+    private void undoMove(Position source, Position target, Piece capturedPiece){
+        Piece p = board.removePiece(target);
+        board.placePiece(p, source);
+
+        if (capturedPiece != null){
+            board.placePiece(capturedPiece, target);
+            capturedPieces.remove(capturedPiece);
+            piecesOnBoard.add((ChessPiece) capturedPiece);
+        }
     }
 
 
@@ -141,7 +156,32 @@ public class ChessMatch {
     }
 
 
+    // Verifica quem é o jogador da rodada
     public Color getCurrentPlayer() {
         return currentPlayer;
+    }
+
+
+    // Irá localizar o rei de uma determinada cor
+    private ChessPiece king (Color color){
+        // Varrerá a lista procurando pela peça com a mesma cor
+        List<Piece> list = piecesOnBoard.stream().filter(x -> x.getColor() == color).collect(Collectors.toList());
+        for (Piece p : list){
+            if(p instanceof King) {
+                return (ChessPiece) p;
+            }
+        }
+        throw new IllegalStateException("THERE IS NO " + color + " KING ON THE BOARD.");
+    }
+
+
+    // Verifica de quem é  a peça
+    private Color opponent (Color color){
+        if (color == Color.WHITE){
+            return Color.BLACK;
+        }
+        else {
+            return Color.WHITE;
+        }
     }
 }
