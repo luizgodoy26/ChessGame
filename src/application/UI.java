@@ -63,6 +63,19 @@ public class UI {
         System.out.println();
         System.out.printf("TURN [%d]\n", chessMatch.getTurn());
         System.out.println("PLAYER [" + chessMatch.getCurrentPlayer() + "]");
+        
+
+        // Verifica se a partida está em check
+        if (chessMatch.getCheck()){
+            if (chessMatch.getCurrentPlayer() == Color.WHITE){
+                System.out.print(ANSI_YELLOW);
+                System.out.print("CHECK!");
+                System.out.print(ANSI_RESET);
+            }
+            else {
+                System.out.println("CHECK!");
+            }
+        }
 
     }
 

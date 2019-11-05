@@ -1,5 +1,6 @@
 package boardgame;
 
+import application.UI;
 import chess.*;
 
 import java.util.ArrayList;
@@ -47,6 +48,22 @@ public class ChessMatch {
         validateSourcePosition(source);             // Valida a origem da peça
         validateTargetPosition(source, target);     // Valida o destino da peça
         Piece capturedPiece = makeMove(source, target);
+
+
+        // Verifica se o jogador se pôs em check e desfaz o movimento
+        if (testCheck(currentPlayer)){
+            undoMove(source, target, capturedPiece);
+            throw new ChessException("YOU CAN'T PUT YOURSELF IN CHECK!");
+        }
+
+        // Verifica se o oponente está em check
+        if (testCheck(opponent(currentPlayer))){
+            check = true;
+        }
+        else {
+            check = false;
+        }
+
         nextTurn();                                 // Passa para o próximo turno
         return (ChessPiece)(capturedPiece);
     }
@@ -162,6 +179,11 @@ public class ChessMatch {
     }
 
 
+    public boolean getCheck(){
+        return check;
+    }
+
+
     // Irá localizar o rei de uma determinada cor
     private ChessPiece king (Color color){
         // Varrerá a lista procurando pela peça com a mesma cor
@@ -174,6 +196,19 @@ public class ChessMatch {
         throw new IllegalStateException("THERE IS NO " + color + " KING ON THE BOARD.");
     }
 
+
+    // Varre as peças do tabuleiro para verificar se o rei está em check
+    private boolean testCheck (Color color){
+        Position kingPosition = king(color).getChessPosition().toPosition();    // Procura pelo rei > Passa para ChessP > Passa para Position
+        List<Piece> opponentPieces = piecesOnBoard.stream().filter(x -> x.getColor() == opponent(color)).collect(Collectors.toList());
+        for (Piece p : opponentPieces){
+            boolean[][] mat = p.possibleMoves();
+            if (mat[kingPosition.getRow()][kingPosition.getColumn()]){          // Se alguma peça tiver como Possiblie move a posição do rei, retorna check = true
+                return true;
+            }
+        }
+        return false;
+    }
 
     // Verifica de quem é  a peça
     private Color opponent (Color color){
