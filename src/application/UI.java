@@ -67,13 +67,13 @@ public class UI {
 
         // Verifica se a partida está em check
         if (chessMatch.getCheck()){
-            if (chessMatch.getCurrentPlayer() == Color.WHITE){
+            if (chessMatch.getCurrentPlayer() == Color.BLACK){
                 System.out.print(ANSI_YELLOW);
-                System.out.print("CHECK!");
+                System.out.print(chessMatch.getCurrentPlayer() + " KING IS IN CHECK!");
                 System.out.print(ANSI_RESET);
             }
             else {
-                System.out.println("CHECK!");
+                System.out.print(chessMatch.getCurrentPlayer() + " KING IS IN CHECK!");
             }
         }
 
