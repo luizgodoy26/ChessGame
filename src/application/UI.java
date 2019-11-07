@@ -62,21 +62,25 @@ public class UI {
         printCapturedPieces(captured);          // Exibirá as peças capturadas
         System.out.println();
         System.out.printf("TURN [%d]\n", chessMatch.getTurn());
-        System.out.println("PLAYER [" + chessMatch.getCurrentPlayer() + "]");
-        
 
-        // Verifica se a partida está em check
-        if (chessMatch.getCheck()){
-            if (chessMatch.getCurrentPlayer() == Color.BLACK){
-                System.out.print(ANSI_YELLOW);
-                System.out.print(chessMatch.getCurrentPlayer() + " KING IS IN CHECK!");
-                System.out.print(ANSI_RESET);
-            }
-            else {
-                System.out.print(chessMatch.getCurrentPlayer() + " KING IS IN CHECK!");
+        // Testa se a partida está em check mate
+        if (!chessMatch.getCheckMate()) {
+            System.out.println("PLAYER [" + chessMatch.getCurrentPlayer() + "] TURN!");
+            if (chessMatch.getCheck()){
+                if (chessMatch.getCurrentPlayer() == Color.BLACK){
+                    System.out.print(ANSI_YELLOW);
+                    System.out.print(chessMatch.getCurrentPlayer() + " KING IS IN CHECK!");
+                    System.out.print(ANSI_RESET);
+                }
+                else {
+                    System.out.print(chessMatch.getCurrentPlayer() + " KING IS IN CHECK!");
+                }
             }
         }
-
+        else {
+            System.out.println("CHECKMATE!");
+            System.out.println(chessMatch.getCurrentPlayer() + " IS THE WINNER!");
+        }
     }
 
     // Verifica se há alguma peça no local e exibe ela

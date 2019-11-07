@@ -16,6 +16,7 @@ public class ChessMatch {
     private int turn;
     private Color currentPlayer;
     private boolean check;
+    private boolean checkMate;
 
     private List<ChessPiece> piecesOnBoard = new ArrayList<>();
     private List<ChessPiece> capturedPieces = new ArrayList<>();
@@ -62,6 +63,10 @@ public class ChessMatch {
         }
         else {
             check = false;
+        }
+
+        if (testCheckMate(opponent(currentPlayer))){        // Se o oponente da peça que foi mexida está em check mate
+            checkMate = true;
         }
 
         nextTurn();                                 // Passa para o próximo turno
@@ -135,6 +140,10 @@ public class ChessMatch {
     private void initialSetup(){
         // WHITE BOARD
         placeNewPiece('a', 1, new Rook(board, Color.WHITE));
+        placeNewPiece('b', 1, new Rook(board, Color.WHITE));
+        placeNewPiece('c', 1, new Rook(board, Color.WHITE));
+        placeNewPiece('d', 1, new Rook(board, Color.WHITE));
+        placeNewPiece('f', 1, new Rook(board, Color.WHITE));
         placeNewPiece('h', 1, new Rook(board, Color.WHITE));
         placeNewPiece('e', 1, new King(board, Color.WHITE));
 
@@ -149,38 +158,6 @@ public class ChessMatch {
     private void placeNewPiece(char column, int row, ChessPiece piece){
         board.placePiece(piece, new ChessPosition(column, row).toPosition());
         piecesOnBoard.add(piece);
-    }
-
-
-    /* para que o console não tenha acesso à peça do tipo piece
-     * cria-se uma nova matriz do tipo chesspiece, recebendo os valores de piece
-     * desta forma, o tabuleiro */
-    public ChessPiece[][] getPieces(){
-        ChessPiece[][] mat = new ChessPiece[board.getRows()][board.getColumns()];
-        // COM ESTE FOR, CADA PEÇA NA LINHA i E COLUNA j VAI RECEBER A SUA RESPECTIVA piece
-        for (int i  = 0; i<board.getRows();i++){
-            for (int j  = 0; j<board.getColumns();j++){
-                // REALIZADO O DOWNCASTING DE piece PARA ChessPiece
-                mat [i][j] = (ChessPiece) board.piece(i, j);
-            }
-        }
-        return mat;
-    }
-
-
-    public int getTurn() {
-        return turn;
-    }
-
-
-    // Verifica quem é o jogador da rodada
-    public Color getCurrentPlayer() {
-        return currentPlayer;
-    }
-
-
-    public boolean getCheck(){
-        return check;
     }
 
 
@@ -210,6 +187,37 @@ public class ChessMatch {
         return false;
     }
 
+
+    // Verifica se está em check mate
+    private boolean testCheckMate(Color color){
+        if (! testCheck(color)){
+            return false;
+        }
+
+        List<Piece> pieces = piecesOnBoard.stream().filter(x -> x.getColor() == color).collect(Collectors.toList());
+
+        for (Piece p : pieces){
+            boolean[][] mat = p.possibleMoves();
+            for (int i = 0; i<board.getRows(); i++){
+                // Este  irá literalmente mover a peça em check para verificar se existe alguma posição que tira ela de check
+                for (int j = 0; j<board.getColumns(); j++) {
+                    if (mat[i][j]){
+                        Position source = ((ChessPiece)p).getChessPosition().toPosition();  // Recebe a posição de origem
+                        Position target = new Position(i, j);                               // Recebe a posição de destino
+                        Piece capturedPiece = makeMove(source, target);                     // Faz o movimento
+                        boolean testCheck = testCheck(color);                               // Testa se ainda está em check
+                        undoMove(source, target, capturedPiece);                            // Desfaz o movimento para não modificar o tabuleiro
+                        if (!testCheck){
+                            return false;           // Se não estiver mais em check retorna falso
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+
     // Verifica de quem é  a peça
     private Color opponent (Color color){
         if (color == Color.WHITE){
@@ -218,5 +226,41 @@ public class ChessMatch {
         else {
             return Color.WHITE;
         }
+    }
+
+
+    /* para que o console não tenha acesso à peça do tipo piece
+     * cria-se uma nova matriz do tipo chesspiece, recebendo os valores de piece
+     * desta forma, o tabuleiro */
+    public ChessPiece[][] getPieces(){
+        ChessPiece[][] mat = new ChessPiece[board.getRows()][board.getColumns()];
+        // COM ESTE FOR, CADA PEÇA NA LINHA i E COLUNA j VAI RECEBER A SUA RESPECTIVA piece
+        for (int i  = 0; i<board.getRows();i++){
+            for (int j  = 0; j<board.getColumns();j++){
+                // REALIZADO O DOWNCASTING DE piece PARA ChessPiece
+                mat [i][j] = (ChessPiece) board.piece(i, j);
+            }
+        }
+        return mat;
+    }
+
+
+    public int getTurn() {
+        return turn;
+    }
+
+
+    public Color getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+
+    public boolean getCheck(){
+        return check;
+    }
+
+
+    public boolean getCheckMate() {
+        return checkMate;
     }
 }
