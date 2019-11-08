@@ -58,7 +58,7 @@ public class Pawn extends ChessPiece {
             // ABAIXO
             p.setValues(position.getRow() + 1, position.getColumn());
             if (getBoard().positionExists(p) && !getBoard().thereIsAPiece(p)) {
-                mat[p.getRow()][p.getColumn()] = true;  // Marca na matriz que a posição destino é valida
+                mat[p.getRow()][p.getColumn()] = true;
             }
 
 
