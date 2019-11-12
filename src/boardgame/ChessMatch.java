@@ -79,6 +79,7 @@ public class ChessMatch {
         ChessPiece p = (ChessPiece) board.removePiece(source);                // Retira a peça da posição atual
         p.increaseMoveCount();
         Piece capturedPice = board.removePiece(target);     // Captura a peça da posição alvo
+        board.placePiece(p, target);                        // Move a peça para a posição destino
 
         // Se houver captura de uma peça
         if (capturedPice != null){
@@ -86,7 +87,26 @@ public class ChessMatch {
             capturedPieces.add((ChessPiece) capturedPice);  // Adiciona à lista de peças capturadas
         }
 
-        board.placePiece(p, target);                        // Move a peça para a posição destino
+
+        // #SpecialMove Castling lado rei
+        if (p instanceof King && target.getColumn() == source.getColumn() + 2){     // Se o rei andou 2 posições à direita com relação a sua operação de origem foi um Castling para o lado do rei
+            Position sourceR = new Position(source.getRow(), source.getColumn() + 3); // Pega a posição da torre (3 colunas à direita do rei)
+            Position targetR = new Position(source.getRow(), source.getColumn() + 1); // Pega a posição de destino (1 coluna à direita do rei)
+            ChessPiece rook = (ChessPiece)board.removePiece(sourceR);       // Remove a peça da posição de origem
+            board.placePiece(rook, targetR);           // Posiciona a peça na posição destino
+            rook.increaseMoveCount();
+        }
+
+
+        // #SpecialMove Castling lado rainha
+        if (p instanceof King && target.getColumn() == source.getColumn() - 2){     // Se o rei andou 2 posições à esquerda com relação a sua operação de origem foi um Castling para o lado da rainha
+            Position sourceR = new Position(source.getRow(), source.getColumn() - 4); // Pega a posição da torre (3 colunas à direita do rei)
+            Position targetR = new Position(source.getRow(), source.getColumn() - 1); // Pega a posição de destino (1 coluna à direita do rei)
+            ChessPiece rook = (ChessPiece)board.removePiece(sourceR);       // Remove a peça da posição de origem
+            board.placePiece(rook, targetR);           // Posiciona a peça na posição destino
+            rook.increaseMoveCount();
+        }
+
         return capturedPice;
     }
 
@@ -101,6 +121,26 @@ public class ChessMatch {
             board.placePiece(capturedPiece, target);
             capturedPieces.remove(capturedPiece);
             piecesOnBoard.add((ChessPiece) capturedPiece);
+        }
+
+
+        // #SpecialMove Castling lado rei
+        if (p instanceof King && target.getColumn() == source.getColumn() + 2){     // Se o rei andou 2 posições à direita com relação a sua operação de origem foi um Castling para o lado do rei
+            Position sourceR = new Position(source.getRow(), source.getColumn() + 3); // Pega a posição da torre (3 colunas à direita do rei)
+            Position targetR = new Position(source.getRow(), source.getColumn() + 1); // Pega a posição de destino (1 coluna à direita do rei)
+            ChessPiece rook = (ChessPiece)board.removePiece(targetR);       // Remove a peça da posição de destino
+            board.placePiece(rook, sourceR);           // Posiciona a peça na posição origem
+            rook.decreaseMoveCount();
+        }
+
+
+        // #SpecialMove Castling lado rainha
+        if (p instanceof King && target.getColumn() == source.getColumn() - 2){     // Se o rei andou 2 posições à esquerda com relação a sua operação de origem foi um Castling para o lado da rainha
+            Position sourceR = new Position(source.getRow(), source.getColumn() - 4); // Pega a posição da torre (3 colunas à direita do rei)
+            Position targetR = new Position(source.getRow(), source.getColumn() - 1); // Pega a posição de destino (1 coluna à direita do rei)
+            ChessPiece rook = (ChessPiece)board.removePiece(targetR);       // Remove a peça da posição de destino
+            board.placePiece(rook, sourceR);           // Posiciona a peça na posição origem
+            rook.decreaseMoveCount();
         }
     }
 
@@ -162,7 +202,7 @@ public class ChessMatch {
 
         placeNewPiece('d', 1, new Queen(board, Color.WHITE));
 
-        placeNewPiece('e', 1, new King(board, Color.WHITE));
+        placeNewPiece('e', 1, new King(board, Color.WHITE, this));
 
 
         // BLACK BOARD
@@ -186,7 +226,7 @@ public class ChessMatch {
 
         placeNewPiece('d', 8, new Queen(board, Color.BLACK));
 
-        placeNewPiece('e', 8, new King(board, Color.BLACK));
+        placeNewPiece('e', 8, new King(board, Color.BLACK, this));
 
     }
 
